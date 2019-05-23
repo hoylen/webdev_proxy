@@ -1,0 +1,34 @@
+/* CSS for the example */
+
+body {
+  background: lightblue;
+  font-family: sans-serif;
+}
+
+nav {
+  margin-bottom: 4ex;
+  text-transform: uppercase;
+  font-size: smaller;
+}
+
+.logo {
+  float: right;
+}
+
+.hidden-by-css {
+  display: none;
+}
+
+#hit-count {
+  clear: both;
+  margin-top: 8ex;
+  text-align: center;
+}
+
+#hit-count:before {
+  content: "Hit Count: "
+}
+
+p.note {
+  font-size: smaller;
+}
