@@ -10,7 +10,7 @@
 /// This package provides functions that can be used when the HTTP server is
 /// implemented as a server-side Dart program. When the HTTP server is running
 /// in debug mode, requests can be proxied through to _webdev serve_ using the
-/// [respondFromServe] function. When running in produciton mode, the compiled
+/// [respondFromServe] function. When running in production mode, the compiled
 /// client-side scripts can be served using the [respondFromBuild] function.
 ///
 /// The HTTP server should handle all HTTP requests normally, with any HTTP GET
