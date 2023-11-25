@@ -42,8 +42,8 @@ Future<void> main(List<String> arguments) async {
 
   // Process command line arguments
 
-  String buildDir;
-  String webdevServeUrl;
+  String? buildDir;
+  String? webdevServeUrl;
 
   var usageError = false;
   if (arguments.isEmpty) {
@@ -97,12 +97,12 @@ Future<void> runServer({
   String host = 'localhost',
   int port = 8000,
   bool debugMode = false,
-  String buildDir,
-  String webdevServeUrl,
+  String? buildDir,
+  String? webdevServeUrl,
 }) async {
   // Check parameters are suitable
 
-  Uri webdevServe;
+  Uri? webdevServe;
 
   if (!debugMode) {
     // Production mode: assetDir needed
@@ -160,7 +160,7 @@ Future<void> runServer({
 /// null). Otherwise, [buildDir] must have a value.
 
 Future<void> processGet(HttpRequest req,
-    {bool debugMode, String buildDir, Uri webdevServe}) async {
+    {bool debugMode = false, String? buildDir, Uri? webdevServe}) async {
   final responseGenerated = await generateResponse(req);
 
   if (!responseGenerated) {

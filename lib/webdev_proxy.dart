@@ -131,14 +131,14 @@ class ServerUnavailable extends WebdevProxyException {
 /// That is, if it contains ".." components, which are usually a sign of the
 /// client trying to access files they shouldn't.
 
-Future<void> respondFromBuild(HttpRequest req, String buildDir) async {
+Future<void> respondFromBuild(HttpRequest req, String? buildDir) async {
   if (buildDir == null) {
     throw ArgumentError.notNull('buildDir');
   }
-  if (buildDir == null || !buildDir.startsWith(Platform.pathSeparator)) {
+  if (!buildDir.startsWith(Platform.pathSeparator)) {
     throw ArgumentError.value(buildDir, 'buildDir', 'not absolute path');
   }
-  if (req == null || req.method != 'GET') {
+  if (req.method != 'GET') {
     throw ArgumentError.value(req, 'req', 'not a HTTP GET request');
   }
 
@@ -183,7 +183,7 @@ Future<void> respondFromBuild(HttpRequest req, String buildDir) async {
 Future<void> _serveFileContents(File file, HttpResponse resp) async {
   // Try to determine content type from filename suffix
 
-  ContentType contentType;
+  ContentType? contentType;
 
   final p = file.path;
   final dotIndex = p.lastIndexOf('.');
@@ -256,11 +256,11 @@ String _rfc1123DateFormat(DateTime datetime) {
 ///
 /// Throws [ServerUnavailable] if the HTTP server cannot be contacted.
 
-Future<void> respondFromServe(HttpRequest req, Uri webdevServe) async {
+Future<void> respondFromServe(HttpRequest req, Uri? webdevServe) async {
   if (webdevServe == null) {
     throw ArgumentError.notNull('webdevServe');
   }
-  if (req == null || req.method != 'GET') {
+  if (req.method != 'GET') {
     throw ArgumentError.value(req, 'req', 'not a HTTP GET request');
   }
 
@@ -300,13 +300,12 @@ Future<void> respondFromServe(HttpRequest req, Uri webdevServe) async {
           // Repeating headers are not supported by the http package, even
           // though it is permitted in HTTP
           _log.warning('multiple headers not passed to webdev serve: $name');
+          throw StateError('multiple headers not supported');
         }
       }
 
-      if (newValue != null) {
-        _log.finest('  $name: $newValue');
-        targetHeaders[name] = newValue;
-      }
+      _log.finest('  $name: $newValue');
+      targetHeaders[name] = newValue;
     });
 
     // Perform request on webdev serve
@@ -328,13 +327,11 @@ Future<void> respondFromServe(HttpRequest req, Uri webdevServe) async {
     for (final name in targetResponse.headers.keys) {
       String value;
       if (!_defaultResponseHeadersDiscarded.contains(name.toLowerCase())) {
-        value = targetResponse.headers[name];
-      } else {
-        _log.finest('  DISCARDED: $name: ${targetResponse.headers[name]}');
-      }
-      if (value != null) {
+        value = targetResponse.headers[name]!;
         _log.finest('  $name: $value');
         resp.headers.add(name, value);
+      } else {
+        _log.finest('  DISCARDED: $name: ${targetResponse.headers[name]}');
       }
     }
     resp
@@ -350,8 +347,8 @@ Future<void> respondFromServe(HttpRequest req, Uri webdevServe) async {
     if (e is SocketException) {
       if (e.message == '' &&
           e.osError != null &&
-          e.osError.errorCode == 61 &&
-          e.osError.message == 'Connection refused') {
+          e.osError!.errorCode == 61 &&
+          e.osError!.message == 'Connection refused') {
         // Known situation: more compact error message
         message = ': cannot connect';
       } else {
